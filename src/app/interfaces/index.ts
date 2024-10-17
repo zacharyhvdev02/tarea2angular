@@ -73,3 +73,18 @@ export interface ISearch {
   totalElements?: number;
   totalPages?:number;
 }
+
+export interface IProduct {
+  id?: number;
+  name?: string;
+  description?: string;
+  price?: number;
+  stock?: number;
+  category?: ICategory;
+}
+
+export interface ICategory {
+  id?: number;
+  name?: string;
+  description?: string;
+}
