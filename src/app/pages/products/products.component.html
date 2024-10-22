@@ -3,22 +3,24 @@
   <div class="row p-4">
     <div class="col-12">
       <div class="d-flex justify-content-between align-items-center">
-        <h2>Orders</h2>
-        <button (click)="modalService.displayModal('md', addOrdersModal)" type="button" class="btn btn-primary"><i class="fas fa-plus"></i></button>
+        <h2>Products</h2>
+        @if (canAdd) {
+          <button (click)="modalService.displayModal('md', addProductsModal)" type="button" class="btn btn-primary"><i class="fas fa-plus"></i></button>
+        }
       </div>
     </div>
     <div class="col-12">
-      <app-orders-list
+      <app-product-list
         (callModalAction)="callEdition($event)"
-        (callDeleteAction)="ordersService.delete($event)"
-        [orders]="ordersService.orders$()"
+        (callDeleteAction)="productsService.delete($event)"
+        [products]="productsService.products$()"
       />
     </div>
-    @if(ordersService.orders$().length) {
+    @if(productsService.products$().length) {
       <app-pagination
-        [service]="ordersService"
+        [service]="productsService"
         [customCall]="true"
-        (callCustomPaginationMethod)="authService.isSuperAdmin() ? ordersService.getAll(): ordersService.getAllByUser()"
+        (callCustomPaginationMethod)="authService.isSuperAdmin() ? productsService.getAll(): productsService.getAllByUser()"
       />
     }
   </div>
@@ -26,13 +28,14 @@
   <app-loader/>
 }
 
-<ng-template #addOrdersModal>
+<ng-template #addProductsModal>
   <app-modal
     [hideFooter]="true"
   >
     <div>
-      <app-orders-form
-        [orderForm]="orderForm"
+      <app-product-form
+        [productForm]="productForm"
+        [categories]="categoriesService.categories$()"
         (callSaveMethod)="saveOrder($event)"
         (callUpdateMethod)="updateOrder($event)"
       />

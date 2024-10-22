@@ -8,9 +8,9 @@ import { AlertService } from './alert.service';
   providedIn: 'root'
 })
 export class ProductsService extends BaseService<IProduct> {
-  protected override source: string = 'orders';
+  protected override source: string = 'products';
   private productListSignal = signal<IProduct[]>([]);
-  get orders$() {
+  get products$() {
     return this.productListSignal;
   }
   public search: ISearch = { 
@@ -35,7 +35,7 @@ export class ProductsService extends BaseService<IProduct> {
   }
 
   getAllByUser() {
-    this.findAllWithParamsAndCustomSource(`user/${this.authService.getUser()?.id}/products`, { page: this.search.page, size: this.search.size}).subscribe({
+    this.findAllWithParamsAndCustomSource(`products`, { page: this.search.page, size: this.search.size}).subscribe({
       next: (response: any) => {
         this.search = {...this.search, ...response.meta};
         this.totalItems = Array.from({length: this.search.totalPages ? this.search.totalPages: 0}, (_, i) => i+1);
@@ -48,10 +48,10 @@ export class ProductsService extends BaseService<IProduct> {
   }
 
   save(product: IProduct) {
-    this.addCustomSource(`user/${this.authService.getUser()?.id}`, product).subscribe({
+    this.add(product).subscribe({
       next: (response: any) => {
         this.alertService.displayAlert('success', response.message, 'center', 'top', ['success-snackbar']);
-        this.getAllByUser(); // Adjust if you need to fetch products instead of orders
+        this.getAll(); // Adjust if you need to fetch products instead of orders
       },
       error: (err: any) => {
         this.alertService.displayAlert('error', 'An error occurred adding the product', 'center', 'top', ['error-snackbar']);
@@ -64,7 +64,7 @@ export class ProductsService extends BaseService<IProduct> {
     this.editCustomSource(`${product.id}`, product).subscribe({
       next: (response: any) => {
         this.alertService.displayAlert('success', response.message, 'center', 'top', ['success-snackbar']);
-        this.getAllByUser(); // Adjust if you need to fetch products instead of orders
+        this.getAll(); // Adjust if you need to fetch products instead of orders
       },
       error: (err: any) => {
         this.alertService.displayAlert('error', 'An error occurred updating the product', 'center', 'top', ['error-snackbar']);
@@ -77,7 +77,7 @@ export class ProductsService extends BaseService<IProduct> {
     this.delCustomSource(`${product.id}`).subscribe({
       next: (response: any) => {
         this.alertService.displayAlert('success', response.message, 'center', 'top', ['success-snackbar']);
-        this.getAllByUser(); // Adjust if you need to fetch products instead of orders
+        this.getAll(); // Adjust if you need to fetch products instead of orders
       },
       error: (err: any) => {
         this.alertService.displayAlert('error', 'An error occurred deleting the product', 'center', 'top', ['error-snackbar']);
