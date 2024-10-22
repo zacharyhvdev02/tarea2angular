@@ -23,7 +23,6 @@ export class ProductsFormComponent {
 
   callSave() {
     //this.categoryId = this.categoryTd.nativeElement.getAttribute('data-category-id')
-    console.log(this.productForm.controls['category'].value);
       let product: IProduct = {
         name: this.productForm.controls['name'].value,
         description: this.productForm.controls['description'].value,

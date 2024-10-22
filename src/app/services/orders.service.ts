@@ -38,7 +38,6 @@ export class OrdersService extends BaseService<IOrder> {
     this.findAllWithParamsAndCustomSource(`user/${this.authService.getUser()?.id}/orders`, { page: this.search.page, size: this.search.size}).subscribe({
       next: (response: any) => {
         this.search = {...this.search, ...response.meta};
-        console.log('response', this.search);
         this.totalItems = Array.from({length: this.search.totalPages ? this.search.totalPages: 0}, (_, i) => i+1);
         this.orderListSignal.set(response.data);
       },
