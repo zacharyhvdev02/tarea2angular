@@ -8,7 +8,12 @@ import { AccessDeniedComponent } from './pages/access-denied/access-denied.compo
 import { AdminRoleGuard } from './guards/admin-role.guard';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { GuestGuard } from './guards/guest.guard';
-import { IRole } from './interfaces';
+import { IRoleType } from './interfaces';
+import { ProfileComponent } from './pages/profile/profile.component';
+import { GamesComponent } from './pages/games/games.component';
+import { OrdersComponent } from './pages/orders/orders.component';
+import { ProductsComponent } from './pages/products/products.component';
+import { CategoriesComponent } from './pages/categories/categories.component';
 
 export const routes: Routes = [
   {
@@ -46,10 +51,11 @@ export const routes: Routes = [
         canActivate:[AdminRoleGuard],
         data: { 
           authorities: [
-            IRole.admin, 
-            IRole.superAdmin
+            IRoleType.admin, 
+            IRoleType.superAdmin
           ],
-          name: 'Users'
+          name: 'Users',
+          showInSidebar: true
         }
       },
       {
@@ -57,11 +63,83 @@ export const routes: Routes = [
         component: DashboardComponent,
         data: { 
           authorities: [
-            IRole.admin, 
-            IRole.superAdmin,
-            IRole.user
+            IRoleType.admin, 
+            IRoleType.superAdmin,
+            IRoleType.user
           ],
-          name: 'Dashboard'
+          name: 'Dashboard',
+          showInSidebar: true
+        }
+      },
+      {
+        path: 'profile',
+        component: ProfileComponent,
+        data: { 
+          authorities: [
+            IRoleType.admin, 
+            IRoleType.superAdmin,
+            IRoleType.user
+          ],
+          name: 'profile',
+          showInSidebar: false
+        }
+      },
+      {
+        path: 'games',
+        component: GamesComponent,
+        data: { 
+          authorities: [
+            IRoleType.admin, 
+            IRoleType.superAdmin,
+            IRoleType.user,
+          ],
+          name: 'games',
+          showInSidebar: true
+        }
+      },
+      {
+        path: 'orders',
+        component: OrdersComponent,
+        data: { 
+          authorities: [
+            IRoleType.admin, 
+            IRoleType.superAdmin,
+            IRoleType.user,
+          ],
+          name: 'orders',
+          showInSidebar: true
+        }
+      },
+      {
+        path: "products",
+        component: ProductsComponent,
+        data: { 
+          authorities: [
+            IRoleType.admin, 
+            IRoleType.superAdmin,
+            IRoleType.user,
+          ],
+          actionsAvailableAuthorities: [
+            IRoleType.superAdmin
+          ],
+          name: 'Products',
+          showInSidebar: true
+        }
+      },
+      {
+        path: "categories",
+        component: CategoriesComponent,
+        data: { 
+          authorities: [
+            IRoleType.admin, 
+            IRoleType.superAdmin,
+            IRoleType.user,
+          ],
+          actionsAvailableAuthorities: [
+            IRoleType.superAdmin
+          ],
+          name: 'Categories',
+          showInSidebar: true
         }
       }
     ],

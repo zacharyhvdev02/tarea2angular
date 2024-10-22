@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { ILoginResponse, IResponse, IUser } from '../interfaces';
+import { inject, Injectable } from '@angular/core';
+import { IAuthority, ILoginResponse, IResponse, IRoleType, IUser } from '../interfaces';
 import { Observable, firstValueFrom, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
@@ -10,8 +10,9 @@ export class AuthService {
   private accessToken!: string;
   private expiresIn! : number;
   private user: IUser = {email: '', authorities: []};
+  private http: HttpClient = inject(HttpClient);
 
-  constructor(private http: HttpClient) {
+  constructor() {
     this.load();
   }
 
@@ -69,6 +70,10 @@ export class AuthService {
     return this.user.authorities ?  this.user?.authorities.some(authority => authority.authority == role) : false;
   }
 
+  public isSuperAdmin(): boolean {
+    return this.user.authorities ?  this.user?.authorities.some(authority => authority.authority == IRoleType.superAdmin) : false;
+  }
+
   public hasAnyRole(roles: any[]): boolean {
     return roles.some(role => this.hasRole(role));
   }
@@ -94,5 +99,29 @@ export class AuthService {
     localStorage.removeItem('access_token');
     localStorage.removeItem('expiresIn');
     localStorage.removeItem('auth_user');
+  }
+
+  public getUserAuthorities (): IAuthority[] | undefined {
+    return this.getUser()?.authorities ? this.getUser()?.authorities : [];
+  }
+
+  public areActionsAvailable(routeAuthorities: string[]): boolean  {
+    // definición de las variables de validación
+    let allowedUser: boolean = false;
+    let isAdmin: boolean = false;
+    // se obtienen los permisos del usuario
+    let userAuthorities = this.getUserAuthorities();
+    // se valida que sea una ruta permitida para el usuario
+    for (const authority of routeAuthorities) {
+      if (userAuthorities?.some(item => item.authority == authority)) {
+        allowedUser = userAuthorities?.some(item => item.authority == authority)
+      }
+      if (allowedUser) break;
+    }
+    // se valida que el usuario tenga un rol de administración
+    if (userAuthorities?.some(item => item.authority == IRoleType.admin || item.authority == IRoleType.superAdmin)) {
+      isAdmin = userAuthorities?.some(item => item.authority == IRoleType.admin || item.authority == IRoleType.superAdmin);
+    }
+    return allowedUser && isAdmin;
   }
 }
